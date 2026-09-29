@@ -1,6 +1,6 @@
 [project]
 name = "dhis2w-browser"
-version = "1.29.0"
+version = "1.30.0"
 description = "dhis2w plugin pack: Playwright-driven DHIS2 UI automation and the d2w browser surface."
 readme = "README.md"
 authors = [{ name = "Morten Hansen", email = "morten@winterop.com" }]
@@ -17,9 +17,9 @@ classifiers = [
 ]
 dependencies = [
   # The plugin host, the profile resolver, `open_client`, and the CLI output helpers.
-  "dhis2w-core==1.29.0",
+  "dhis2w-core==1.30.0",
   # `Dhis2Client` and the auth schemes a browser session is minted from.
-  "dhis2w-client==1.29.0",
+  "dhis2w-client==1.30.0",
   # The capture results and every view model.
   "pydantic>=2.13",
   # The `d2w browser` sub-app.
@@ -46,8 +46,8 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
-  "dhis2w-core[testing]==1.29.0",
-  "dhis2w-cli==1.29.0",
+  "dhis2w-core[testing]==1.30.0",
+  "dhis2w-cli==1.30.0",
   "ruff>=0.16.3",
   "mypy>=2.3.1",
   "pyright>=1.1.411",
