@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dhis2w_browser.dashboard import add_banner, slugify, trim_background
 from PIL import Image
+
+from dhis2w_browser.dashboard import add_banner, slugify, trim_background
 
 
 def test_slugify_handles_typical_names() -> None:

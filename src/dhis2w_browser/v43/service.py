@@ -17,13 +17,13 @@ from typing import TYPE_CHECKING
 
 import httpx2
 from dhis2w_client.v43 import BasicAuth
-
 from dhis2w_core.profile import Profile
 from dhis2w_core.v43.client_context import open_client
 
 if TYPE_CHECKING:
-    from dhis2w_browser import CaptureResult, MapCaptureResult, PatOptions, VisualizationCaptureResult
     from playwright.async_api import BrowserContext, Page
+
+    from dhis2w_browser import CaptureResult, MapCaptureResult, PatOptions, VisualizationCaptureResult
 
 
 class BrowserExtraNotInstalled(RuntimeError):

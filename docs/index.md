@@ -1,54 +1,52 @@
-# dhis2w-browser — Playwright helpers for DHIS2 UI automation
+# dhis2w-browser - Playwright helpers for DHIS2 UI automation
 
-A separate workspace member so API-only callers of `dhis2w-client` never pull
-in Chromium. Today ships a login helper + PAT minting; the package is set up
-to grow into the first real home for workflows that DHIS2 only exposes
-through its web UI.
+A [dhis2w](https://github.com/winterop-com/dhis2w) plugin pack for the workflows DHIS2 only
+exposes through its web UI: screenshots of dashboards, maps and visualizations, a logged-in
+browser session from any profile, and Personal Access Token minting. It lives in its own
+repository so that installing `dhis2w-client` or `dhis2w-cli` never pulls in Chromium.
+
+## Install
+
+```bash
+uv tool install 'dhis2w-cli[browser]'
+playwright install chromium
+```
+
+`d2w browser ...` then appears in `d2w --help`, mounted from this pack through the
+`dhis2w.plugins.v1` entry point. As a library, `uv add dhis2w-browser`.
 
 ## Surfaces
 
 | Layer | Entry point | Where |
 | --- | --- | --- |
-| Library (low-level) | `dhis2w_browser.logged_in_page` | `packages/dhis2w-browser/src/dhis2w_browser/session.py` |
-| Library (low-level) | `dhis2w_browser.session_from_cookie` | `packages/dhis2w-browser/src/dhis2w_browser/session.py` |
-| Library (low-level) | `dhis2w_browser.session_from_cookie_header` + `parse_cookie_header` / `CookiePair` | `packages/dhis2w-browser/src/dhis2w_browser/session.py` |
-| Library (low-level) | `dhis2w_browser.create_pat` | `packages/dhis2w-browser/src/dhis2w_browser/pat.py` |
-| Library (low-level) | `dhis2w_browser.drive_oauth2_login` | `packages/dhis2w-browser/src/dhis2w_browser/oauth2.py` |
-| Service (profile-aware) | `dhis2w_core.v43.plugins.browser.service.authenticated_session` | `packages/dhis2w-core/src/dhis2w_core/v43/plugins/browser/service.py` |
-| CLI | `d2w browser pat` | `packages/dhis2w-core/src/dhis2w_core/v43/plugins/browser/cli.py` |
+| Library | `dhis2w_browser.logged_in_page` | `src/dhis2w_browser/session.py` |
+| Library | `dhis2w_browser.session_from_cookie` | `src/dhis2w_browser/session.py` |
+| Library | `dhis2w_browser.session_from_cookie_header` + `parse_cookie_header` / `CookiePair` | `src/dhis2w_browser/session.py` |
+| Library | `dhis2w_browser.create_pat` | `src/dhis2w_browser/pat.py` |
+| Library | `dhis2w_browser.drive_oauth2_login` | `src/dhis2w_browser/oauth2.py` |
+| Service (profile-aware) | `dhis2w_browser.v43.service.authenticated_session` | `src/dhis2w_browser/v43/service.py` |
+| CLI | `d2w browser ...` | `src/dhis2w_browser/v43/cli.py` |
 
-The browser plugin mounts under the main `d2w` CLI alongside every other
-plugin (`files`, `messaging`, `metadata`, …) — there's no separate
-`dhis2w-browser` binary. Chromium stays optional: users who install
-`dhis2w-cli` (or `dhis2w-mcp`) without the `[browser]` extra never pull
-Playwright. `service.require_browser()` checks for the library at call
-time and raises a clear install hint if it's missing.
+The service and the CLI exist once per DHIS2 major, as `dhis2w_browser.v41`, `v42` and `v43`;
+v43 is the canonical baseline, and the pack's plugin object picks the tree the host binds to.
 
 ## Layering
 
-The split between `dhis2w-core`'s `browser` plugin and the `dhis2w-browser`
-library follows the same pattern every plugin uses:
-
 ```
-user runs:    d2w browser pat ...
-              │
-              ▼
-dhis2w-cli:    main.py → discovers plugins → mounts them
-              │
-              ▼
-dhis2w-core:   plugins/browser/cli.py  (Typer sub-app for `d2w browser ...`)
-              │
-              ▼
-dhis2w-core:   plugins/browser/service.py  (guarded wrapper + install hint)
-              │
-              ▼
-dhis2w-browser: create_pat / logged_in_page  (actual Playwright work)
+user runs:       d2w browser pat ...
+                 │
+                 ▼
+dhis2w-cli:      main.py → loads the plugin host → mounts every contribution
+                 │
+                 ▼
+dhis2w-browser:  plugin.py → v43/cli.py  (Typer sub-app for `d2w browser ...`)
+                 │
+                 ▼
+dhis2w-browser:  v43/service.py  (profile-aware wrapper)
+                 │
+                 ▼
+dhis2w-browser:  create_pat / logged_in_page  (the Playwright work)
 ```
-
-Keeping `dhis2w-browser` as a separate workspace member stops the Chromium
-dependency chain from leaking into `dhis2w-client`. The plugin in
-`dhis2w-core` stays tiny — it's a thin Typer facade over the library's
-typed entry points.
 
 ## Auth + session cookies — what works for browser workflows
 
@@ -89,13 +87,13 @@ scope checkbox, clicks `#submit-consent`), then waits for the loopback
 receiver on `redirect_uri` to collect the authorization code.
 
 The helper depends on `--no-browser` landing the auth URL in stderr — if
-the CLI copy ever drifts, `packages/dhis2w-browser/tests/test_oauth2.py`
+the CLI copy ever drifts, `tests/test_oauth2.py`
 fails at the parser level so the failure surfaces in unit tests rather
 than at runtime. On subsequent logins (same user / client / scope),
 Spring AS skips the consent screen and redirects straight to the
 receiver — the helper handles both cases.
 
-The profile-aware wrapper `dhis2w_core.v43.plugins.browser.service.authenticated_session(profile)`
+The profile-aware wrapper `dhis2w_browser.v43.service.authenticated_session(profile)`
 dispatches on auth type: Basic → hit `GET /api/me` with `BasicAuth(...)`,
 grab the `Set-Cookie: JSESSIONID`, call `session_from_cookie`. Session →
 inject the profile's stored cookie directly via `session_from_cookie_header`
@@ -137,7 +135,7 @@ Decision recorded in `docs/decisions.md` 2026-04-17.
 ## Test coverage
 
 One `@pytest.mark.slow` integration test at
-`packages/dhis2w-browser/tests/test_pat.py` runs the full `create_pat`
+`tests/test_pat_integration.py` runs the full `create_pat`
 pipeline against the live seeded stack and verifies the minted token
 authenticates on `/api/me` via `PatAuth`. Not in `make test` (Playwright +
 live DHIS2 are out of scope for the fast suite); runs in `make test-slow`

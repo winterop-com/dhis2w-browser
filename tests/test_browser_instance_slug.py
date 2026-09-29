@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dhis2w_core.v42.plugins.browser.service import instance_slug
+from dhis2w_browser.v42.service import instance_slug
 
 
 def test_strips_scheme_and_colonises_port() -> None:

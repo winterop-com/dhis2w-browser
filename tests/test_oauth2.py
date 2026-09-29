@@ -6,6 +6,7 @@ import asyncio
 from typing import Any
 
 import pytest
+
 from dhis2w_browser.oauth2 import _read_auth_url
 
 # The exact stderr block `d2w profile login --no-browser` emits today.

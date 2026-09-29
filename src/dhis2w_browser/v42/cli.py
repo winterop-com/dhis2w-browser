@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import typer
-
 from dhis2w_core.cli_output import is_json_output
 from dhis2w_core.profile import profile_from_env
 
@@ -83,7 +82,7 @@ def pat_command(
     persistent immediately. Subsequent `GET /api/apiToken/{id}` calls return
     metadata but not the secret.
     """
-    from dhis2w_core.v42.plugins.browser import service
+    from dhis2w_browser.v42 import service
 
     service.require_browser()
     from dhis2w_browser import PatOptions
@@ -149,7 +148,7 @@ def dashboard_screenshot_command(
     content (canvas / svg / leaflet / highcharts / img / long text) with
     a plateau detector so one stuck item doesn't stall the batch.
     """
-    from dhis2w_core.v42.plugins.browser import service
+    from dhis2w_browser.v42 import service
 
     profile = profile_from_env()
     resolved_output_dir = output_dir if output_dir is not None else Path.cwd() / "screenshots"
@@ -229,7 +228,7 @@ def viz_screenshot_command(
     `uv add 'dhis2w-cli[browser]'` + `playwright install
     chromium` first.
     """
-    from dhis2w_core.v42.plugins.browser import service
+    from dhis2w_browser.v42 import service
 
     service.require_browser()
     profile = profile_from_env()
@@ -302,7 +301,7 @@ def map_screenshot_command(
     snapping. Requires the `[browser]` extra (install with
     `uv add 'dhis2w-cli[browser]'` + `playwright install chromium`).
     """
-    from dhis2w_core.v42.plugins.browser import service
+    from dhis2w_browser.v42 import service
 
     service.require_browser()
     profile = profile_from_env()

@@ -7,6 +7,7 @@ assert which cookies land in the browser context and where the page navigates.
 from __future__ import annotations
 
 import pytest
+
 from dhis2w_browser import session
 from dhis2w_browser.session import CookiePair, parse_cookie_header
 

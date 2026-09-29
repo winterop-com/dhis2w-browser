@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dhis2w_browser.visualization import add_viz_banner, slugify_viz
 from PIL import Image
+
+from dhis2w_browser.visualization import add_viz_banner, slugify_viz
 
 
 def test_slugify_viz_handles_typical_names() -> None:

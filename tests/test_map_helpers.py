@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dhis2w_browser.maps import add_map_banner, slugify_map
 from PIL import Image
+
+from dhis2w_browser.maps import add_map_banner, slugify_map
 
 
 def test_slugify_map_standard_names() -> None:

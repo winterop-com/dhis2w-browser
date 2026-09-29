@@ -1,15 +1,20 @@
 # dhis2w-browser
 
-Playwright-based helpers for DHIS2 UI automation. Separate from `dhis2w-client` so API-only callers never pull in Chromium.
+A [dhis2w](https://github.com/winterop-com/dhis2w) plugin pack for Playwright-driven DHIS2 UI
+automation: dashboard, map and visualization screenshots, a logged-in browser session from any
+profile, and Personal Access Token minting. It lives in its own repository so that installing
+`dhis2w-client` or `dhis2w-cli` never pulls in Chromium.
+
+Documentation: <https://winterop-com.github.io/dhis2w-browser/>
 
 ## Install
 
 ```bash
-uv add 'dhis2w-cli[browser]'            # pulls dhis2w-browser alongside the main CLI
-playwright install chromium           # one-off; pulls the actual browser driver
+uv tool install 'dhis2w-cli[browser]'   # the d2w CLI with this pack
+playwright install chromium             # one-off; the browser the flows drive
 ```
 
-Library-only consumers (no CLI) can install `dhis2w-browser` on its own.
+Library-only consumers (no CLI) can `uv add dhis2w-browser` on its own.
 
 ## Surface
 
@@ -71,3 +76,15 @@ asyncio.run(main())
 ## Architecture
 
 See `docs/architecture/browser.md` for the longer write-up: why PAT creation has to go through a browser (DHIS2 gates `/api/apiToken` behind a session cookie), how `logged_in_page` drives the React login form, and what's on the roadmap.
+
+## Development
+
+```bash
+make install      # uv sync --all-groups
+make lint         # ruff, mypy, pyright
+make test         # the suite, without the live-stack Playwright tests
+make test-slow    # the live-stack tests: a running DHIS2 and `playwright install chromium`
+make docs         # the documentation site, strictly
+```
+
+The pack releases the same version as the dhis2w host; see `CLAUDE.md`.

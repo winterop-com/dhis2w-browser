@@ -6,8 +6,9 @@ from pathlib import Path
 
 import pytest
 from dhis2w_core.profile import Profile
-from dhis2w_core.v42.plugins.browser.service import capture_dashboards
 from PIL import Image
+
+from dhis2w_browser.v42.service import capture_dashboards
 
 pytestmark = pytest.mark.slow
 

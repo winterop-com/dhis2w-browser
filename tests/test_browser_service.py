@@ -11,7 +11,8 @@ import httpx
 import pytest
 import respx
 from dhis2w_core.profile import Profile
-from dhis2w_core.v42.plugins.browser.service import (
+
+from dhis2w_browser.v42.service import (
     BrowserWorkflowNotSupported,
     mint_jsessionid,
 )
