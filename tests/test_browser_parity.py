@@ -1,20 +1,30 @@
 """Per-version parity for the `browser` plugin service's respx-testable surface.
 
-The Playwright capture path is tested in `packages/dhis2w-browser/tests/` (slow, live). Here we exercise
-the HTTP shortcut + auth-dispatch guards (`mint_jsessionid`) across all three trees, so the v41/v43
-service module's non-Playwright logic runs. The browser service's Playwright orchestration stays
-coverage-omitted (it needs the optional `[browser]` extra + a real page).
+The Playwright capture path is tested by the slow, live tests. Here we exercise the HTTP shortcut and
+the auth-dispatch guards (`mint_jsessionid`) across all three trees, so each version's service module
+runs its non-Playwright logic.
 """
 
 from __future__ import annotations
 
 from collections.abc import Callable
+from importlib import import_module
 from types import ModuleType
 
 import httpx
 import pytest
 import respx
 from dhis2w_core.profile import Profile
+
+
+@pytest.fixture
+def plugin_service(core_version: str) -> Callable[[str], ModuleType]:
+    """Return a helper that imports the pack's service module for the parametrized version tree."""
+
+    def _service(plugin_name: str) -> ModuleType:
+        return import_module(f"dhis2w_{plugin_name}.{core_version}.service")
+
+    return _service
 
 
 @respx.mock
