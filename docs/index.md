@@ -27,7 +27,7 @@ playwright install chromium
 | Service (profile-aware) | `dhis2w_browser.v43.service.authenticated_session` | `src/dhis2w_browser/v43/service.py` |
 | CLI | `d2w browser ...` | `src/dhis2w_browser/v43/cli.py` |
 
-The service and the CLI exist once per DHIS2 major, as `dhis2w_browser.v41`, `v42` and `v43`;
+The service and the CLI exist once per DHIS2 major, as `dhis2w_browser.v41`, `v42`, `v43` and `v44`;
 v43 is the canonical baseline, and the pack's plugin object picks the tree the host binds to.
 
 ## Layering

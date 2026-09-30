@@ -21,12 +21,12 @@ mypy + pyright, full descriptive names, one-line Google-style docstrings on ever
 module, class, and function, conventional commits, no AI attribution, and the
 greenfield voice: describe what the code does now, never how it got there.
 
-## The three version trees
+## The version trees
 
-`dhis2w_browser.v41`, `.v42`, and `.v43` carry the `d2w browser` sub-app and its
+`dhis2w_browser.v41`, `.v42`, `.v43`, and `.v44` carry the `d2w browser` sub-app and its
 profile-aware service, one per DHIS2 major. v43 is the canonical baseline: new behaviour is
-written there first and copied to the two siblings. Every behaviour-changing edit lands in all
-three trees. The tests are one tree parametrised over the three, never three copies.
+written there first and copied to the siblings. Every behaviour-changing edit lands in every
+tree. The tests are one tree parametrised over all of them, never per-tree copies.
 
 The Playwright library itself - sessions, PAT minting, the OAuth2 login driver, the dashboard,
 map and visualization capture - is version-invariant and lives once in `dhis2w_browser`.

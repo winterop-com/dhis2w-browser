@@ -1,7 +1,7 @@
 """Per-version parity for the `browser` plugin service's respx-testable surface.
 
 The Playwright capture path is tested by the slow, live tests. Here we exercise the HTTP shortcut and
-the auth-dispatch guards (`mint_jsessionid`) across all three trees, so each version's service module
+the auth-dispatch guards (`mint_jsessionid`) across every tree, so each version's service module
 runs its non-Playwright logic.
 """
 

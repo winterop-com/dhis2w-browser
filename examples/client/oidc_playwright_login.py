@@ -42,7 +42,7 @@ from _runner import run_example
 from dhis2w_client import Dhis2Client
 from dhis2w_core.client_context import build_auth_for_name
 
-# v43 is the canonical baseline: swap `.v43` for `.v41` / `.v42` to pin another major.
+# v43 is the canonical baseline: swap `.v43` for `.v41` / `.v42` / `.v44` to pin another major.
 from dhis2w_core.v43.plugins.profile import service
 
 from dhis2w_browser import drive_oauth2_login
