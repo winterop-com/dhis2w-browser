@@ -63,7 +63,7 @@ Each profile auth type maps to a way of getting one:
 | **Basic** (username + password) | Yes | Either (a) drive the React login form, or (b) one `GET /api/me` with `Authorization: Basic ...` — DHIS2 mints a `JSESSIONID` in the response `Set-Cookie` and we inject it into `BrowserContext.add_cookies(...)`. Path (b) is faster + fully headless + doesn't depend on login-form selectors. |
 | **Session** (stored cookie) | Yes | The profile already holds the session material: `profile.cookie` is parsed with `parse_cookie_header` (every `name=value` pair, multi-pair values included) and injected directly via `session_from_cookie_header` — no mint, no login form, path (c). |
 | **PAT** | Yes | **Not supported for browser workflows.** PATs don't mint sessions. A browser flow on a PAT profile has to fall back to prompting for a password; the profile itself can't drive it. |
-| **OAuth2 / OIDC** | Yes | Probably path (b) with `Authorization: Bearer <access_token>` — DHIS2 should mint a session the same way it does for Basic, but this is unverified as of today; track in BUGS.md if it doesn't. |
+| **OAuth2 / OIDC** | Yes | Probably path (b) with `Authorization: Bearer <access_token>` — DHIS2 should mint a session the same way it does for Basic, but this is unverified as of today; track in DHIS2_ISSUES.md if it doesn't. |
 
 All three paths are implemented:
 
