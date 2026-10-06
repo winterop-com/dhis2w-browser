@@ -161,15 +161,20 @@ async def drive_login_form(auth_url: str, *, username: str, password: str, headl
             await page.fill("input[name='username']", username)
             await page.fill("input[name='password']", password)
             await page.click("button[type='submit']")
-            # DHIS2 v42 Spring AS serves a "Consent required" screen on the first
-            # authorization for a given (user, client, scope) — the user must tick
-            # the scope checkbox and click `#submit-consent` for the flow to
-            # issue the authorization-code redirect. Subsequent logins with the
-            # same tuple skip the consent page and redirect straight to the
-            # receiver, so we wait for either terminal state.
+            # DHIS2's Spring authorization server serves a "Consent required" screen
+            # on the first authorization for a given (user, client, scope): every
+            # requested scope is a checkbox to tick before `#submit-consent` issues
+            # the authorization-code redirect. The scopes differ by release - `ALL`
+            # through 2.43.1, the OpenID scopes (`openid`, `email`, `profile`,
+            # `username`) from 2.43.2 and on 2.44 - so every listed checkbox is
+            # ticked rather than one by name. Later logins with the same tuple skip
+            # the consent page and redirect straight to the receiver, so we wait
+            # for either terminal state.
             try:
                 await page.wait_for_selector("#submit-consent", timeout=10_000)
-                await page.check("input[name='scope'][value='ALL']")
+                scopes = page.locator("input[name='scope']")
+                for index in range(await scopes.count()):
+                    await scopes.nth(index).check()
                 await page.click("#submit-consent")
             except Exception:
                 # No consent screen — already-consented path. The authorize
