@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import os
 import re
 from pathlib import Path
@@ -117,7 +118,8 @@ async def drive_oauth2_login(
 
 async def _read_auth_url(proc: asyncio.subprocess.Process, buffer: list[str]) -> str:
     """Stream stderr until we see the `Open this URL ...` header; return the URL on the next line."""
-    assert proc.stderr is not None
+    if proc.stderr is None:
+        raise RuntimeError("`d2w profile login` subprocess was started without a stderr pipe")
     saw_header = False
     while True:
         line_bytes = await proc.stderr.readline()
@@ -170,17 +172,15 @@ async def drive_login_form(auth_url: str, *, username: str, password: str, headl
             # ticked rather than one by name. Later logins with the same tuple skip
             # the consent page and redirect straight to the receiver, so we wait
             # for either terminal state.
-            try:
+            # No consent screen means the already-consented path: the authorize
+            # endpoint has already fired the redirect, so page.wait_for_url below
+            # will hit the receiver origin.
+            with contextlib.suppress(Exception):
                 await page.wait_for_selector("#submit-consent", timeout=10_000)
                 scopes = page.locator("input[name='scope']")
                 for index in range(await scopes.count()):
                     await scopes.nth(index).check()
                 await page.click("#submit-consent")
-            except Exception:
-                # No consent screen — already-consented path. The authorize
-                # endpoint has already fired the redirect, so page.wait_for_url
-                # below will hit the receiver origin.
-                pass
             # Wait for the browser to arrive at the loopback receiver. At that
             # point the CLI's redirect handler has the code and `proc.communicate`
             # on the outer helper will see the subprocess exit cleanly. The
