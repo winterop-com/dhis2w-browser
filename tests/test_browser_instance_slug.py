@@ -8,8 +8,8 @@ from dhis2w_browser.v42.service import instance_slug
 def test_strips_scheme_and_colonises_port() -> None:
     """Every URL form common in profiles maps to a filesystem-safe slug."""
     assert instance_slug("http://localhost:8080") == "localhost-8080"
-    assert instance_slug("https://play.dhis2.org/40") == "play.dhis2.org-40"
-    assert instance_slug("https://play.dhis2.org/40/") == "play.dhis2.org-40"
+    assert instance_slug("https://play.dhis2.org/2.43") == "play.dhis2.org-2.43"
+    assert instance_slug("https://play.dhis2.org/2.43/") == "play.dhis2.org-2.43"
 
 
 def test_preserves_dots_and_hyphens() -> None:

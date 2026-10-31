@@ -200,8 +200,8 @@ def instance_slug(base_url: str) -> str:
 
     Strips the scheme, replaces `/` and `:` with `-`, collapses trailing
     separators. Used to namespace captures per instance so multi-stack
-    runs don't overwrite each other: `https://play.dhis2.org/40` →
-    `play.dhis2.org-40`, `http://localhost:8080` → `localhost-8080`.
+    runs don't overwrite each other: `https://play.dhis2.org/2.43` →
+    `play.dhis2.org-2.43`, `http://localhost:8080` → `localhost-8080`.
     """
     import re  # noqa: PLC0415 — tight local scope
 
